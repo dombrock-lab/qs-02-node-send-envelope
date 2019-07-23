@@ -22,6 +22,13 @@
  * @author DocuSign
  * @see <a href="https://developers.docusign.com">DocuSign Developer Center</a>
  */
+const message = {
+  toName: "Test Recipient",
+  toEmail: "matdombrock@gmail.com",
+  subject: "This is the subject.",
+  blurb: "This is the blurb."
+};
+
 const docusign = require('docusign-esign')
     , path = require('path')
     , fs = require('fs')
@@ -37,15 +44,15 @@ async function sendEnvelopeController (req, res) {
   // or environment variables.
 
   // Obtain an OAuth token from https://developers.hqtest.tst/oauth-token-generator
-  const accessToken = envir.ACCESS_TOKEN || qp.ACCESS_TOKEN || '{ACCESS_TOKEN}';
+  const accessToken = envir.ACCESS_TOKEN || qp.ACCESS_TOKEN || 'eyJ0eXAiOiJNVCIsImFsZyI6IlJTMjU2Iiwia2lkIjoiNjgxODVmZjEtNGU1MS00Y2U5LWFmMWMtNjg5ODEyMjAzMzE3In0.AQoAAAABAAUABwCAgGoyLQ_XSAgAgMCNQHAP10gCAPBHemXuAX9JinUPHd1HwaYVAAEAAAAYAAEAAAAFAAAADQAkAAAAZjBmMjdmMGUtODU3ZC00YTcxLWE0ZGEtMzJjZWNhZTNhOTc4EgABAAAACwAAAGludGVyYWN0aXZlMAAA6tExLQ_XSDcApRk8F7bGqE6k2JtMHExdiw.BQCV0Xnl8G-SauyE9siiBVXNRS4BdQTuBsx8W3IJ_vpwhQ58cvrWFoO3emeztEu0Jzm6huAfs-lQxurA9lwpt-zWVBaaUOlk23DKHzSghObYQ3x-CiBZnkl6RZn-PdkSXUYTh-PYV71C6dG9Y8koPF5ThShIOrzfldpll_L2cVeo71BNSjXWqu9ohyTpjnCbgrERUmz-l662yizkGGw49_dGJKD_qi_byt-jWA6hK0kIG8zQj-W9B5MvulmHXAdqHGPu4Dxa4ZVsEAnRw5DIBYL6m6O4REhMLB1D3LuconpDHaFyTnJfSv9qLFQqUSuGa-uoB9zCLFQozxdBVsLzeg';
 
   // Obtain your accountId from demo.docusign.com -- the account id is shown in the drop down on the
   // upper right corner of the screen by your picture or the default picture. 
-  const accountId = envir.ACCOUNT_ID || qp.ACCOUNT_ID || '{ACCOUNT_ID}'; 
+  const accountId = envir.ACCOUNT_ID || qp.ACCOUNT_ID || '8189481'; 
 
   // Recipient Information:
-  const signerName = envir.USER_FULLNAME || qp.USER_FULLNAME || '{USER_FULLNAME}';
-  const signerEmail = envir.USER_EMAIL || qp.USER_EMAIL || '{USER_EMAIL}';
+  const signerName = envir.USER_FULLNAME || qp.USER_FULLNAME || message.toName || 'Mathieu Dombrock';
+  const signerEmail = envir.USER_EMAIL || qp.USER_EMAIL || message.toEmail ||  'matdombrock@gmail.com';
 
   // The document you wish to send. Path is relative to the root directory of this repo.
   const fileName = 'demo_documents/World_Wide_Corp_lorem.pdf';
@@ -68,8 +75,8 @@ async function sendEnvelopeController (req, res) {
   // Start with the request object
   const envDef = new docusign.EnvelopeDefinition();
   //Set the Email Subject line and email message
-  envDef.emailSubject = 'Please sign this document sent from the Node example';
-  envDef.emailBlurb = 'Please sign this document sent from the Node example.'
+  envDef.emailSubject = message.subject;
+  envDef.emailBlurb = message.blurb;
 
   // Read the file from the document and convert it to a Base64String
   const pdfBytes = fs.readFileSync(path.resolve(__dirname, fileName))
@@ -133,7 +140,7 @@ async function sendEnvelopeController (req, res) {
 
 // The mainline
 const port = process.env.PORT || 3000
-    , host = process.env.HOST || 'localhost'
+    , host = process.env.HOST || '192.168.112.128'
     , app = express()
        .get('/', sendEnvelopeController)
        .listen(port, host);
