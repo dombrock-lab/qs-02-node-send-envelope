@@ -14,6 +14,8 @@ file for installation and setup steps.
 
 ## Running the example
 ````
+npm install
+
 npm start
 or
 node index.js
